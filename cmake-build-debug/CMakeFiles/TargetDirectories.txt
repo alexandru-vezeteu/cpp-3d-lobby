@@ -1,0 +1,5 @@
+/home/alex/code/SPG/Game/cmake-build-debug/CMakeFiles/Server.dir
+/home/alex/code/SPG/Game/cmake-build-debug/CMakeFiles/Client.dir
+/home/alex/code/SPG/Game/cmake-build-debug/CMakeFiles/main.dir
+/home/alex/code/SPG/Game/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/alex/code/SPG/Game/cmake-build-debug/CMakeFiles/rebuild_cache.dir
