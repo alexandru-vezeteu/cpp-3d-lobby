@@ -43,4 +43,5 @@ docker run --rm \
   --group-add video \
   client:$NAME
 
-xhost -local:docker
+xhost -local:docker 2>/dev/null 1>/dev/null
+docker image rm client:$NAME 2>/dev/null 1>/dev/null

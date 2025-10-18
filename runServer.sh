@@ -13,3 +13,5 @@ docker run -it --rm \
   -e PORT="$PORT" \
   --name 3d_lobby_server \
   server
+
+docker image rm server 2>/dev/null 1>/dev/null

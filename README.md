@@ -149,7 +149,7 @@ The shader supports dynamic light configurations (currently 4 lights) and proper
 
 ## Build Requirements
 
-- C++17 or later
+- C++20 or later
 - OpenGL 3.3+
 - GLUT/FreeGLUT
 - Assimp
