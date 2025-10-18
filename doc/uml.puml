@@ -1,0 +1,352 @@
+@startuml
+
+interface Socket {
+    +Bind(string, uint16_t): void
+    +Listen(int): void
+    +Connect(string, uint16_t): void
+    +ReceiveFrom(void*, size_t, int, sockaddr*, socklen_t*): size_t
+    +SendTo(void*, size_t, int, sockaddr*, socklen_t): size_t
+    +Close(): void
+    +Shutdown(int): void
+    +IsReadable(int): bool
+    +IsWriteable(int): bool
+    +SendAll(void*, size_t): size_t
+    +RecvAll(void*, size_t): size_t
+}
+note right of Socket
+  TODO: Add the Socket interface
+end note
+class PosixSocket <<final>> {
+    -fd: int
+    -s_addr: sockaddr_in
+    -conn_addr: unique_ptr<sockaddr_in>
+    
+    +<<delete>> PosixSocket(const PosixSocket&)
+    +<<delete>> operator=(const PosixSocket&)
+    +PosixSocket(PosixSocket&&) noexcept
+    +<<explicit>> PosixSocket(int, int, int)
+    +~PosixSocket()
+    +Bind(string, uint16_t): void
+    +Listen(int): void <<const>>
+    +Accept(int): PosixSocket <<const>>
+    +Connect(string, uint16_t): void
+    +ReceiveFrom(void*, size_t, int, sockaddr*, socklen_t*): size_t <<const>>
+    +SendTo(void*, size_t, int, sockaddr*, socklen_t): size_t <<const>>
+    +Close(): void
+    +Shutdown(int): void
+    +IsReadable(int): bool <<const>>
+    +IsWriteable(int): bool <<const>>
+    +SendAll(void*, size_t): size_t <<const>>
+    +RecvAll(void*, size_t): size_t <<const>>
+}
+
+class Network <<final>> {
+    -sock: Socket*
+    -Float: union
+    
+    +<<delete>> Network(const Network&)
+    +<<delete>> operator=(const Network&)
+    +~Network()
+    +Network(Network&&) noexcept
+    +<<explicit>> Network(Socket&&) noexcept
+    +<<explicit>> Network(int, int, int)
+    +bind(string, uint16_t): void
+    +listen(int): void <<const>>
+    +accept(int): Network <<const>>
+    +connect(string, uint16_t): void
+    +receiveFile(string): void
+    +sendFile(string): void
+    +sendVec3(glm::vec3): void
+    +receiveVec3(): glm::vec3
+    +sendName(string): void
+    +receiveName(): string
+    +receiveFrom(void*, size_t): size_t
+    +sendTo(void*, size_t): void
+    +receiveCommand(): Command
+    +sendCommand(Command): void
+    +poll(int): bool <<const>>
+}
+
+Socket <|.. PosixSocket
+Network o--> Socket : uses
+
+class OpenGL3DModel {
+    +meshes: vector<Mesh>
+    #shader: GLuint
+    #xMin: float
+    #xMax: float
+    #yMin: float
+    #yMax: float
+    #zMin: float
+    #zMax: float
+    #shaderUniforms: unordered_map<string, variant<float, int, vec2, vec3, vec4, mat3, mat4>>
+    
+    #compileShaders(string): void
+    #loadModel(string): bool
+    #processMesh(aiMesh*, aiScene*, string): bool
+    #processNode(aiNode*, aiScene*, string): bool
+    #sendVariable<T>(string, T): void <<template>>
+    
+    +<<explicit>> OpenGL3DModel(string)
+    +<<delete>> OpenGL3DModel(const OpenGL3DModel&)
+    +<<delete>> operator=(const OpenGL3DModel&)
+    +operator=(OpenGL3DModel&&) noexcept
+    +OpenGL3DModel(OpenGL3DModel&&) noexcept
+    +setVariable(string, variant<float, int, vec2, vec3, vec4, mat3, mat4>): void
+    +sendAllUniforms(): void
+    +getSizes(): vector<float> <<const>>
+    +~OpenGL3DModel()
+}
+
+class Mesh {
+    +VAO: GLuint
+    +VBO: GLuint
+    +EBO: GLuint
+    +diffuseTex: GLuint
+    +normalTex: GLuint
+    +roughnessTex: GLuint
+    +indexCount: GLsizei
+    
+    +Mesh()
+    +Mesh(GLuint, GLuint, GLuint, GLuint, GLuint, GLuint, GLsizei)
+    +Mesh(Mesh&&) noexcept
+    +operator=(Mesh&&) noexcept
+    +<<delete>> Mesh(const Mesh&)
+    +<<delete>> operator=(const Mesh&)
+    +~Mesh()
+}
+
+OpenGL3DModel +-- Mesh
+
+
+interface IDraw {
+    +{abstract} display(glm::mat4, glm::mat4, glm::vec3): void
+    +~IDraw()
+}
+
+interface IRenderer {
+    +DisplayFunc: using
+    +KeyboardFunc: using
+    +ReshapeFunc: using
+    +TimeoutFunc: using
+    +MouseFunc: using
+    +CloseFunc: using
+    +SpecialKeyboardFunc: using
+    
+    +~IRenderer()
+    +{abstract} clear(): void
+    +{abstract} swapBuffers(): void
+    +{abstract} redisplay(): void
+    +{abstract} viewport(int, int, int, int): void
+    +{abstract} init(int, char**, char*): void
+    +{abstract} startMainLoop(): void
+    +{abstract} setTimeoutFunction(TimeoutFunc): void
+    +{abstract} setTimeout(int): void
+    +{abstract} setDisplayFunc(DisplayFunc): void
+    +{abstract} setKeyboardFunc(KeyboardFunc): void
+    +{abstract} setReshapeFunc(ReshapeFunc): void
+    +{abstract} setMouseFunc(MouseFunc): void
+    +{abstract} setSpecialKeyboardFunc(SpecialKeyboardFunc): void
+    +{abstract} setCloseFunc(CloseFunc): void
+}
+
+interface IControl {
+    +~IControl()
+    +{abstract} control(unsigned char, int, int): bool
+    +{abstract} mouse(int, int): bool
+    +{abstract} specialKey(int, int, int): bool
+}
+
+class Entity {
+    #model: OpenGL3DModel
+    #position: glm::vec3
+    #rotation: glm::vec3
+    #scale: glm::vec3
+    #name: string
+    
+    +<<explicit>> Entity(string)
+    +~Entity()
+    +setPosition(glm::vec3): void
+    +setRotation(glm::vec3): void
+    +setVariable(string, variant<float, int, vec2, vec3, vec4, mat3, mat4>): void
+    +<<delete>> Entity(const Entity&)
+    +<<delete>> operator=(const Entity&)
+    +Entity(Entity&&) noexcept
+    +operator=(Entity&&) noexcept
+    +display(glm::mat4, glm::mat4, glm::vec3): void <<override>>
+}
+
+IDraw <|.. Entity
+Entity o--> OpenGL3DModel
+class "ThreadSafeQueue<T>" as ThreadSafeQueue {
+    -queue: deque<T>
+    -mutex: shared_mutex
+    
+    +ThreadSafeQueue()
+    +<<delete>> ThreadSafeQueue(const ThreadSafeQueue&)
+    +<<delete>> operator=(const ThreadSafeQueue&)
+    +<<delete>> ThreadSafeQueue(ThreadSafeQueue&&)
+    +<<delete>> operator=(ThreadSafeQueue&&)
+    +push(T): void
+    +pop(): void
+    +empty(): bool
+    +front(): T
+    +size(): int
+    +front_and_pop(): T
+    +get_all(): vector<T>
+}
+
+class "ThreadSafeUnorderedMap<K,V>" as ThreadSafeUnorderedMap {
+    -map: unordered_map<K, shared_ptr<V>>
+    -mutex: shared_mutex
+    
+    +ThreadSafeUnorderedMap()
+    +<<delete>> ThreadSafeUnorderedMap(const ThreadSafeUnorderedMap&)
+    +<<delete>> ThreadSafeUnorderedMap(const ThreadSafeUnorderedMap&&)
+    +<<delete>> operator=(const ThreadSafeUnorderedMap&)
+    +<<delete>> operator=(const ThreadSafeUnorderedMap&&)
+    +empty(): bool
+    +size(): int
+    +for_each(function<void(K&, shared_ptr<V>&)>): ThreadSafeUnorderedMap& <<const>>
+    +apply(function<void(K&, V&)>): ThreadSafeUnorderedMap&
+    +set(K, V): void
+    +emplace<Args...>(K, Args...): void <<template>>
+    +emplace(K): void
+    +get(K): shared_ptr<V>
+    +remove(K): void
+    +contains(K): bool
+    +operator[](K): shared_ptr<V>
+    +keys(): vector<K>
+    +values(): vector<shared_ptr<V>>
+    +keys(function<bool(K&, shared_ptr<V>&)>): vector<K>
+    +erase(K): void
+}
+class Player <<final>> {
+    -{static} cameraOffset: glm::vec3 <<const>>
+    -viewPos: glm::vec3
+    -projectionMatrix: glm::mat4
+    -viewMatrix: glm::mat4
+    
+    +<<explicit>> Player(string)
+    +~Player()
+    +updateCamera(): void
+    +mouse(int, int): bool <<override>>
+    +specialKey(int, int, int): bool <<override>>
+    +control(unsigned char, int, int): bool <<override>>
+    +getView(): glm::mat4& <<const>>
+    +getProjection(): glm::mat4& <<const>>
+    +getProjection(): glm::mat4&
+    +getPosition(): glm::vec3& <<const>>
+    +getRotation(): glm::vec3& <<const>>
+    +getViewPos(): glm::vec3& <<const>>
+}
+
+IDraw <|.. Entity
+Entity o--> OpenGL3DModel
+Entity <|-- Player
+IControl <|.. Player
+class GLUTRenderer {
+    -{static} display_func: DisplayFunc
+    -{static} keyboard_func: KeyboardFunc
+    -{static} special_keyboard_func: SpecialKeyboardFunc
+    -{static} reshape_func: ReshapeFunc
+    -{static} timeout_func: TimeoutFunc
+    -{static} mouse_func: MouseFunc
+    -{static} ms: int
+    -{static} close_func: CloseFunc
+    +{static} width: int
+    +{static} height: int
+    
+    -GLUTRenderer()
+    -{static} displayWrapper(): void
+    -{static} keyboardWrapper(unsigned char, int, int): void
+    -{static} reshapeWrapper(int, int): void
+    -{static} timeoutWrapper(int): void
+    -{static} mouseWrapper(int, int): void
+    -{static} closeWrapper(): void
+    -{static} specialKeyboardWrapper(int, int, int): void
+    
+    +{static} getInstance(): GLUTRenderer&
+    +init(int, char**, char*): void <<override>>
+    +startMainLoop(): void <<override>>
+    +setDisplayFunc(DisplayFunc): void <<override>>
+    +setKeyboardFunc(KeyboardFunc): void <<override>>
+    +setReshapeFunc(ReshapeFunc): void <<override>>
+    +setTimeoutFunction(TimeoutFunc): void <<override>>
+    +setMouseFunc(MouseFunc): void <<override>>
+    +setTimeout(int): void <<override>>
+    +setCloseFunc(CloseFunc): void <<override>>
+    +setSpecialKeyboardFunc(SpecialKeyboardFunc): void <<override>>
+    +clear(): void <<override>>
+    +swapBuffers(): void <<override>>
+    +redisplay(): void <<override>>
+    +viewport(int, int, int, int): void <<override>>
+    +~GLUTRenderer()
+}
+
+IRenderer <|.. GLUTRenderer
+
+enum CommandType {
+    JOIN
+    LEAVE
+    UPDATE
+}
+
+class Command <<struct>> {
+    +type: CommandType
+    +from: string
+    +pos: optional<glm::vec3>
+    +rot: optional<glm::vec3>
+}
+
+Command --> CommandType
+
+class Client {
+    -sock: Network
+    -otherPlayers: unordered_map<string, Entity>
+    -commandQueue: ThreadSafeQueue<Command>
+    -player: unique_ptr<Player>
+    -name: string
+    -running: atomic<bool>
+    -quit: atomic<bool>
+    +renderer: IRenderer&
+    
+    -<<explicit>> Client(string)
+    -listen(): void
+    
+    +{static} getInstance(string): Client&
+    +run(int, char**): void
+    +~Client()
+}
+
+Command --> CommandType
+CommandQueue --> Command
+Client --> Network
+Client --> CommandQueue
+Client --> Entity
+Client --> Player
+Client --> IRenderer
+
+class Server {
+    -sock: Network
+    -playerQ: ThreadSafeUnorderedMap<string, ThreadSafeQueue<Command>>
+    -filesReady: ThreadSafeUnorderedMap<string, bool>
+    -playerPos: ThreadSafeUnorderedMap<string, glm::vec3>
+    -playerRot: ThreadSafeUnorderedMap<string, glm::vec3>
+    -threads: ThreadSafeUnorderedMap<string, thread>
+    -commands: ThreadSafeQueue<Command>
+    -threadsRun: ThreadSafeUnorderedMap<string, atomic<bool>>
+    
+    -serveClient(string, shared_ptr<Network>): void
+    -checkQ(string, shared_ptr<Network>): void
+    
+    +<<explicit>> Server(int)
+    +~Server()
+    +serve(): void [[noreturn]]
+}
+
+Command --> CommandType
+Server --> Network
+Server --> ThreadSafeQueue
+Server --> ThreadSafeUnorderedMap
+@enduml
