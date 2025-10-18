@@ -1,0 +1,552 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 1734,
+      "max": [
+        1.599862813949585,
+        2.0546069145202637,
+        3.3793370723724365
+      ],
+      "min": [
+        -1.5982935428619385,
+        -1.4382309913635254,
+        0.2881685495376587
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 20808,
+      "componentType": 5126,
+      "count": 1734,
+      "max": [
+        0.9996007084846497,
+        0.9996007680892944,
+        0.9997847080230713
+      ],
+      "min": [
+        -0.9991306662559509,
+        -0.997793436050415,
+        -0.9986094832420349
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 1734,
+      "max": [
+        0.9999929070472717,
+        0.7638168334960938,
+        0.9999755620956421,
+        1.0
+      ],
+      "min": [
+        -0.9999830722808838,
+        -0.7806887626647949,
+        -0.6880324482917786,
+        1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 1734,
+      "max": [
+        0.9997970461845398,
+        0.7055553793907166
+      ],
+      "min": [
+        0.00020296838192734867,
+        0.00020295019203331321
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 13872,
+      "componentType": 5126,
+      "count": 1734,
+      "max": [
+        0.0,
+        0.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 27744,
+      "componentType": 5126,
+      "count": 1734,
+      "max": [
+        0.0,
+        0.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 41616,
+      "componentType": 5126,
+      "count": 1734,
+      "max": [
+        0.9997970461845398,
+        0.7055553793907166
+      ],
+      "min": [
+        0.00020296838192734867,
+        0.00020295019203331321
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 55488,
+      "componentType": 5126,
+      "count": 1734,
+      "max": [
+        0.9997970461845398,
+        0.7055553793907166
+      ],
+      "min": [
+        0.00020296838192734867,
+        0.00020295019203331321
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 9216,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 41616,
+      "componentType": 5126,
+      "count": 10528,
+      "max": [
+        1.6870863437652588,
+        4.417881965637207,
+        2.8769640922546387
+      ],
+      "min": [
+        -1.7781023979187012,
+        -3.284949779510498,
+        -0.037005290389060974
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 167952,
+      "componentType": 5126,
+      "count": 10528,
+      "max": [
+        0.9996954202651978,
+        0.9984086155891418,
+        0.9999756217002869
+      ],
+      "min": [
+        -0.9996954202651978,
+        -0.9999682307243347,
+        -0.9999939799308777
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 27744,
+      "componentType": 5126,
+      "count": 10528,
+      "max": [
+        0.9999887943267822,
+        0.9999593496322632,
+        0.998043417930603,
+        1.0
+      ],
+      "min": [
+        -0.9991843700408936,
+        -0.999989926815033,
+        -0.9995989799499512,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 69360,
+      "componentType": 5126,
+      "count": 10528,
+      "max": [
+        1.992148995399475,
+        0.9842939972877502
+      ],
+      "min": [
+        0.015043999999761581,
+        0.015748977661132813
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 153584,
+      "componentType": 5126,
+      "count": 10528,
+      "max": [
+        1.992148995399475,
+        0.9842939972877502
+      ],
+      "min": [
+        0.015043999999761581,
+        0.015748977661132813
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 237808,
+      "componentType": 5126,
+      "count": 10528,
+      "max": [
+        1.992148995399475,
+        0.9842939972877502
+      ],
+      "min": [
+        0.015043999999761581,
+        0.015748977661132813
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 322032,
+      "componentType": 5126,
+      "count": 10528,
+      "max": [
+        1.992148995399475,
+        0.9842939972877502
+      ],
+      "min": [
+        0.015043999999761581,
+        0.015748977661132813
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 406256,
+      "componentType": 5126,
+      "count": 10528,
+      "max": [
+        1.992148995399475,
+        0.9842939972877502
+      ],
+      "min": [
+        0.015043999999761581,
+        0.015748977661132813
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 36864,
+      "componentType": 5125,
+      "count": 51474,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Alex CGW (https://sketchfab.com/alex.cgwarrior)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/glorbo-fruttodrillo-game-3d-model-free-download-d26a3b52c1894452acb2fbe9a9ba05be",
+      "title": "Glorbo Fruttodrillo Game 3D model  Free download"
+    },
+    "generator": "Sketchfab-16.65.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 242760,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 490480,
+      "byteOffset": 242760,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 294288,
+      "byteOffset": 733240,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 196192,
+      "byteOffset": 1027528,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1223720,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/WaTER_baseColor.png"
+    },
+    {
+      "uri": "textures/WaTER_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/WaTER_normal.png"
+    },
+    {
+      "uri": "textures/crocodile_v01body_blinn_baseColor.png"
+    },
+    {
+      "uri": "textures/crocodile_v01body_blinn_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/crocodile_v01body_blinn_normal.png"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "WaTER",
+      "normalTexture": {
+        "index": 2
+      },
+      "occlusionTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0,
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "crocodile_v01body_blinn",
+      "normalTexture": {
+        "index": 5
+      },
+      "occlusionTexture": {
+        "index": 4
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 3
+        },
+        "metallicFactor": 0.0,
+        "metallicRoughnessTexture": {
+          "index": 4
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube_WaTER_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3,
+            "TEXCOORD_1": 4,
+            "TEXCOORD_2": 5,
+            "TEXCOORD_3": 6,
+            "TEXCOORD_4": 7
+          },
+          "indices": 8,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Cube_crocodile_v01body_blinn_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 10,
+            "POSITION": 9,
+            "TANGENT": 11,
+            "TEXCOORD_0": 12,
+            "TEXCOORD_1": 13,
+            "TEXCOORD_2": 14,
+            "TEXCOORD_3": 15,
+            "TEXCOORD_4": 16
+          },
+          "indices": 17,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.009999999776482582,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "0b8106222d84404b9bcb7844883ce532.fbx"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4,
+        5
+      ],
+      "matrix": [
+        79.55699920654297,
+        3.401039421081947e-16,
+        3.274591278377485e-18,
+        0.0,
+        -3.2739470424755854e-18,
+        1.5316898937397585,
+        -79.54225322945845,
+        0.0,
+        -3.4010394831042134e-16,
+        79.54225322945845,
+        1.5316898937397585,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Cube"
+    },
+    {
+      "mesh": 0,
+      "name": "Cube_WaTER_0"
+    },
+    {
+      "mesh": 1,
+      "name": "Cube_crocodile_v01body_blinn_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    },
+    {
+      "sampler": 0,
+      "source": 4
+    },
+    {
+      "sampler": 0,
+      "source": 5
+    }
+  ]
+}

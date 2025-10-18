@@ -7,8 +7,7 @@
 #include <string>
 
 namespace Config {
-    static constexpr std::string serverHost = "172.20.10.5";
-    static constexpr uint16_t serverPort = 2898;
-}
-
+    extern std::string serverHost ;
+    extern uint16_t serverPort;
+};
 #endif //CONFIG_HPP

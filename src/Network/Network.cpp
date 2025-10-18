@@ -7,8 +7,6 @@
 
 #include "Network.hpp"
 
-
-
 Network::Network(int domain, int type, int protocol):sock{domain, type, protocol}
 {}
 
@@ -17,7 +15,7 @@ Network::Network(Network &&other) noexcept : sock(std::move(other.sock)){}
 
 
 
-Network::Network(Socket&& other) noexcept : sock(std::move(other)) {}
+Network::Network(PosixSocket&& other) noexcept : sock(std::move(other)) {}
 
 
 void Network::sendVec3(const glm::vec3& v) {
@@ -172,7 +170,6 @@ void Network::receiveFile(const std::string& filepath) {
         std::cerr<<"Cannot open file "<<filepath<<std::endl;
         exit(EXIT_FAILURE);
     }
-    std::cout<<filepath<<std::endl;
 
     uint16_t net_size{};
     char buffer[1024];
@@ -193,6 +190,8 @@ void Network::receiveFile(const std::string& filepath) {
 bool Network::poll(int ms) const {
     return sock.IsReadable(ms);
 }
+
+
 
 
 

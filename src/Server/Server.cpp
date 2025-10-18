@@ -2,14 +2,17 @@
 // Created by alex on 13/05/25.
 //
 
-
-#include <filesystem>
-#include "../Config/Config.hpp"
-#include "Server.hpp"
-#include "../Command/Command.hpp"
 #include <iostream>
+#include <filesystem>
+
+#include "../Config/Config.hpp"
+#include "../Command/Command.hpp"
+
+#include "Server.hpp"
+
 
 Server::Server(const int accept) {
+    std::filesystem::create_directory("ServerData");
     sock.bind(Config::serverHost, Config::serverPort);
     sock.listen(accept);
 }
@@ -33,7 +36,7 @@ Server::Server(const int accept) {
 
             //threads.set(name, std::move(thread(&Server::serveClient, this,std::move(name), std::move(cl))));
             //vs???
-            thread t(&Server::serveClient, this, name, cl);
+            std::thread t(&Server::serveClient, this, name, cl);
             t.detach();
         }
     }
@@ -47,17 +50,13 @@ void Server::checkQ(const std::string name, const std::shared_ptr<Network> &clie
             if (command.from == name) {
                 continue;
             }
-            std::cout << command.from << " " << static_cast<int>(command.type) << std::endl;
+
             switch (command.type) {
                 case CommandType::JOIN:
                     if (*filesReady[command.from]) {
                         client->sendCommand(command);
-                        string folder = "ServerData/" + command.from;
-                        client->sendFile(folder + "/" + command.from + ".obj");
-                        client->sendFile(folder + "/" + command.from + ".frag");
-                        client->sendFile(folder + "/" + command.from + ".vert");
-                        // client->sendVec3(*playerPos[name]);
-                        // client->sendVec3(*playerRot[name]);
+                        client->sendFile("ServerData/"+command.from+".tar.gz");
+
                     } else {
                         playerQ[name]->push(command);
                     }
@@ -77,36 +76,31 @@ void Server::checkQ(const std::string name, const std::shared_ptr<Network> &clie
 
 
 void Server::serveClient(const std::string name, const std::shared_ptr<Network> &client) {
-    std::filesystem::create_directory("ServerData/" + name);
 
-    string folder;
-
-    auto active = playerQ.keys([this](const string &key, const std::shared_ptr<ThreadSafeQueue<Command> > &val) {
+    std::string file;
+    auto active = playerQ.keys([this](const std::string &key, const std::shared_ptr<ThreadSafeQueue<Command> > &val) {
         return *(this->filesReady[key]);
     });
-    *playerPos[name] = vec3(0);
-    *playerRot[name] = vec3(0);
+    *playerPos[name] = glm::vec3(0);
+    *playerRot[name] = glm::vec3(0);
     uint8_t size = active.size();
     client->sendTo(&size, sizeof(size));
     for (const auto &p: active) {
-        folder = "ServerData/" + p;
+        file = "ServerData/" + p+".tar.gz";
         client->sendName(p);
 
-        client->sendFile(folder + "/" + p + ".obj");
-        client->sendFile(folder + "/" + p + ".vert");
-        client->sendFile(folder + "/" + p + ".frag");
+        std::cout<<"AICI??"<<std::endl;
+        client->sendFile(file);
+
 
         client->sendVec3(*playerPos[p]);
         client->sendVec3(*playerRot[p]);
     }
-    std::cout << name << " a primit restul playerilor." << std::endl;
-    folder = "ServerData/" + name;
-    std::cout << folder << " created" << std::endl;
 
-    client->receiveFile(folder + "/" + name + ".obj");
-    client->receiveFile(folder + "/" + name + ".vert");
-    client->receiveFile(folder + "/" + name + ".frag");
 
+
+
+    client->receiveFile("ServerData/"+name+".tar.gz");
     *filesReady[name] = true;
 
     Command t{CommandType::JOIN, name};
@@ -119,11 +113,11 @@ void Server::serveClient(const std::string name, const std::shared_ptr<Network> 
 
 
     while (*threadsRun[name]) {
-        // if (!client->poll(100 * 1000)) {
-        //     break;
-        // }
+        if (!client->poll(100)) {
+            continue;
+        }
         Command comm = client->receiveCommand();
-        std::cout << comm.from << " " << static_cast<int>(comm.type) << std::endl;
+
         if (comm.type == CommandType::UPDATE) {
             *playerRot[name] = comm.rot.value();
             *playerPos[name] = comm.pos.value();
@@ -139,7 +133,7 @@ void Server::serveClient(const std::string name, const std::shared_ptr<Network> 
         }
     }
 
-    //*threadsRun[name] = false;
+    *threadsRun[name] = false;
     queueCheck.join();
 
     playerQ.erase(name);
@@ -147,4 +141,5 @@ void Server::serveClient(const std::string name, const std::shared_ptr<Network> 
     playerPos.erase(name);
     threadsRun.erase(name);
     threads.erase(name);
+    std::cout<<name<<" disconnected."<<std::endl;
 }

@@ -7,15 +7,15 @@
 #include <string>
 #include <glm/vec3.hpp>
 
-#include "../Socket/Socket.hpp"
+#include "../Socket/PosixSocket.hpp"
 #include "../Entity/Entity.hpp"
 #include "../Command/Command.hpp"
 
 class Network final
 {
 private:
-    Socket sock;
-    explicit Network(Socket&& other) noexcept;
+    PosixSocket sock;
+    explicit Network(PosixSocket&& other) noexcept;
 
 
     union Float {
@@ -52,6 +52,8 @@ public:
     void sendCommand(const Command& command);
 
     bool poll(int ms) const;
+
+
 
 };
 

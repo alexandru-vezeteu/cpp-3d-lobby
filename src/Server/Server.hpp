@@ -7,30 +7,28 @@
 
 #include <string>
 #include <thread>
+
 #include "../Network/Network.hpp"
 #include "../Threadsafe/ThreadSafeQueue.hpp"
 #include "../Threadsafe/ThreadSafeUnorderedMap.hpp"
 #include "../Command/Command.hpp"
-using std::string;
-using std::thread;
-
 
 class Server
 {
 private:
     Network sock;
 
-    ThreadSafeUnorderedMap<string, ThreadSafeQueue<Command>> playerQ;
-    ThreadSafeUnorderedMap<string, bool> filesReady;
+    ThreadSafeUnorderedMap<std::string, ThreadSafeQueue<Command>> playerQ;
+    ThreadSafeUnorderedMap<std::string, bool> filesReady;
 
-    ThreadSafeUnorderedMap<string, glm::vec3> playerPos;
-    ThreadSafeUnorderedMap<string, glm::vec3> playerRot;
+    ThreadSafeUnorderedMap<std::string, glm::vec3> playerPos;
+    ThreadSafeUnorderedMap<std::string, glm::vec3> playerRot;
 
-    ThreadSafeUnorderedMap<string, thread> threads;
+    ThreadSafeUnorderedMap<std::string, std::thread> threads;
 
     ThreadSafeQueue<Command> commands;
 
-    ThreadSafeUnorderedMap<string, std::atomic<bool>> threadsRun;
+    ThreadSafeUnorderedMap<std::string, std::atomic<bool>> threadsRun;
 
 
 public:
@@ -38,8 +36,8 @@ public:
     ~Server() = default;
     [[noreturn]]void serve();
 private:
-    void serveClient(const std::string name, const std::shared_ptr<Network>& client);
-    void checkQ(const std::string name, const std::shared_ptr<Network>& client);
+    void serveClient(std::string name, const std::shared_ptr<Network>& client);
+    void checkQ(std::string name, const std::shared_ptr<Network>& client);
 
 };
 

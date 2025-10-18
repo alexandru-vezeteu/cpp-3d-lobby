@@ -2,161 +2,161 @@
 // Created by alex on 11/05/25.
 //
 
-#include "Client.hpp"
+
 
 #include <filesystem>
 #include <functional>
 #include <iostream>
 #include <mutex>
 #include <thread>
-
-
 #include <bits/std_thread.h>
+
 #include "../GLUTRenderer/GLUTRenderer.hpp"
+#include "../Compressor/Compressor.hpp"
+
+#include "Client.hpp"
 
 
-Client* Client::instance = nullptr;
-std::unique_ptr<IRenderer> Client::renderer{std::make_unique<GLUTRenderer>()};
-Client::Client(const std::string& name, const int scale): cameraPos(10, 10, 10), player{name}, viewMatrix{1}, projectionMatrix{1},
-                                                          name{name}, running{true}, playerMutex{}, playersMutex{}
+
+
+Client::Client(const std::string& name): name{name}, running{true}, renderer{GLUTRenderer::getInstance()} {
+
+    renderer.setDisplayFunc([this]() {
+        const auto& view = this->player->getView();
+        const auto& projection = this->player->getProjection();
+        const auto& viewPos = this->player->getViewPos();
+        this->renderer.clear();
+        for (auto&[fst, snd] : otherPlayers) {
+            snd.display(projection, view, viewPos);
+        }
+        player->display(projection, view, viewPos);
+        this->renderer.swapBuffers();
+    });
+    renderer.setTimeout(16);
+    renderer.setTimeoutFunction([this](int ms) {
+        auto comms = commandQueue.get_all();
+        for (auto& comm : comms) {
+            switch (comm.type) {
+                case CommandType::JOIN: {
+                    otherPlayers.insert_or_assign(comm.from, std::move(Entity{comm.from}));
+                    break;
+                }
+                case CommandType::LEAVE: {
+                    otherPlayers.erase(comm.from);
+                    break;
+                }
+                case CommandType::UPDATE:{
+                    auto it = otherPlayers.find(comm.from);
+                    if (it != otherPlayers.end()) {
+                        it->second.setPosition(comm.pos.value());
+                        it->second.setRotation(comm.rot.value());
+                    }
+                    break;
+                }
+            }
+        }
+        this->renderer.redisplay();
+
+    });
+    renderer.setKeyboardFunc([this](unsigned char key, int x, int y) {
+
+        if (this->player->control(key, x, y)) {
+            Command t{CommandType::UPDATE, this->name, this->player->getPosition(), this->player->getRotation()};
+            this->sock.sendCommand(t);
+            this->renderer.redisplay();
+        }
+
+    });
+    renderer.setSpecialKeyboardFunc([this](int key, int x, int y) {
+        if (this->player->specialKey(key, x, y)) {
+            Command t{CommandType::UPDATE, this->name, this->player->getPosition(), this->player->getRotation()};
+            this->sock.sendCommand(t);
+            this->renderer.redisplay();
+        }
+    });
+    renderer.setReshapeFunc([this](int w, int h) {
+        this->renderer.viewport(0,0,w,h);
+        if (h == 0) h = 1; // Prevent division by zero
+        this->player->getProjection() = glm::perspective<float>(glm::radians(45.0f), static_cast<float>(w)/static_cast<float>(h), 0.1f, 1000.0f);
+    });
+    renderer.setCloseFunc([this]() {
+       this->running = false;
+        while (!quit) {
+
+        }
+
+    });
+}
+
+
+void Client::run(int argc, char**argv)
 {
+    renderer.init(argc, argv, name.c_str());
     sock.connect(Config::serverHost, Config::serverPort);
-
     sock.sendName(name);
+    player = std::make_unique<Player>(name);
 
     uint8_t currPlayers{};
     sock.receiveFrom(&currPlayers, sizeof(uint8_t));
-    std::cout<<"Astept "<<static_cast<int>(currPlayers)<<std::endl;
     for (int i = 0; i < static_cast<int>(currPlayers); i++) {
         std::string n = sock.receiveName();
-        std::filesystem::create_directory(n);
-        std::cout << n << std::endl;
-        sock.receiveFile(n + "/" + n + ".obj");
-        sock.receiveFile(n + "/" + n + ".vert");
-        sock.receiveFile(n + "/" + n + ".frag");
+        sock.receiveFile(n + ".tar.gz");
+        decompress_folder(n + ".tar.gz", n);
 
-        glm::vec3 pos = sock.receiveVec3();
-        glm::vec3 rot = sock.receiveVec3();
+        const glm::vec3 pos = sock.receiveVec3();
+        const glm::vec3 rot = sock.receiveVec3();
 
         otherPlayers.insert(std::make_pair(n, std::move(Entity(n))));
+        std::cout << n << std::endl;
         auto it = otherPlayers.find(n);
+
 
         it->second.setPosition(pos);
         it->second.setRotation(rot);
-
     }
-    sock.sendFile(name + "/" + name + ".obj");
-    sock.sendFile(name + "/" + name + ".vert");
-    sock.sendFile(name + "/" + name + ".frag");
-}
+    compress_folder(name, name + ".tar.gz");
+    sock.sendFile(name + ".tar.gz");
+    std::cout << "SENT " << name << "targz" << std::endl;
+    quit = false;
 
-
-
-void Client::run(int argc, char** argv)
-{
-    //renderer->init(argc, argv, "Demo game");
-
-    renderer->setDisplayFunc([this]() {
-        this->renderer->clear();
-        std::shared_lock lock(playersMutex);
-
-        for (auto&[fst, snd] : otherPlayers) {
-            snd.display(this->projectionMatrix, this->viewMatrix);
-        }
-        player.display(this->projectionMatrix, this->viewMatrix);
-        this->renderer->swapBuffers();
-    });
-
-    renderer->setTimeout(100);
-    renderer->setTimerFunction([this](int _) {
-        std::cout<<"timer"<<std::endl;
-        std::cout<<_<<std::endl;
-        if (!this->commandQueue.empty()) {
-            auto c = this->commandQueue.front_and_pop();
-            if (c.type == CommandType::JOIN) {
-                std::unique_lock lock(playersMutex);
-                otherPlayers.insert_or_assign(c.from, std::move(Entity{c.from}));
-            }
-        }
-    });
-    renderer->setKeyboardFunc([this](unsigned char key, int x, int y) {
-        if (key=='a') {
-            this->player.addToRot(25,25,0);
-            Command t{CommandType::UPDATE, this->name, this->player.getPos(), this->player.getRot()};
-            this->sock.sendCommand(t);
-        }
-        this->renderer->redisplay();
-    });
-
-    renderer->setReshapeFunc([this](int w, int h) {
-        this->renderer->viewport(0,0,w,h);
-        this->projectionMatrix = glm::perspective<float>(M_PI/4, static_cast<float>(w)/static_cast<float>(h), 0.1f, 1000.0f);
-        this->viewMatrix = glm::lookAt(cameraPos, vec3(0), vec3(0,1,0));
-    });
 
     std::thread listenServer(&Client::listen, this);
-    renderer->startMainLoop();
-    running = false;
-    listenServer.join();
-
+    renderer.startMainLoop();
 }
 
-Client& Client::getInstance(const std::string& name, int scale) {
+Client& Client::getInstance(const std::string& name) {
 
-    static Client instance{name, scale};
+    static Client instance{name};
     return instance;
 }
 
 void Client::listen() {
     while (running)
     {
-        // if (!sock.poll(10*1000)) {
-        //     break;
-        // }
+        if (!sock.poll(100)) {
+            continue;
+        }
 
         std::unique_lock<std::shared_mutex> lock;
         auto c = sock.receiveCommand();
         switch (c.type) {
             case CommandType::JOIN: {
-                std::cout << "JOIN" << c.from << std::endl;
-                std::filesystem::create_directory(c.from);
-                sock.receiveFile(c.from+"/"+c.from+".obj");
-                sock.receiveFile(c.from+"/"+c.from+".frag");
-                sock.receiveFile(c.from+"/"+c.from+".vert");
-
-                // Create the model first to ensure files are loaded
-
-
-                commandQueue.push(c);
+                sock.receiveFile(c.from+".tar.gz");
+                decompress_folder(c.from+".tar.gz", c.from);
                 break;
             }
             case CommandType::UPDATE: {
-                lock = std::unique_lock{playersMutex};
-                auto it = otherPlayers.find(c.from);
-                if (it != otherPlayers.end()) {
-                    it->second.setPosition( c.pos.value() );
-                    it->second.setRotation( c.rot.value() );
-                    renderer->redisplay();
-                }
                 break;
             }
             case CommandType::LEAVE: {
-                commandQueue.push(c);
-                renderer->redisplay();
                 break;
             }
         }
-
+        commandQueue.push(c);
 
     }
 
     const Command leave{CommandType::LEAVE, name};
     sock.sendCommand(leave);
+    quit = true;
 }
-
-
-
-
-
-
-

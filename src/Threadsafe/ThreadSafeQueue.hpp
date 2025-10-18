@@ -4,10 +4,13 @@
 
 #ifndef THREADSAFEQUEUE_HPP
 #define THREADSAFEQUEUE_HPP
+
 #include <mutex>
 #include <deque>
 #include <shared_mutex>
 
+
+//ar putea fi imbunatatita cu un condition variable care ar notifica threadurile in momentul in care pot
 template<typename T>
 class ThreadSafeQueue {
 private:
@@ -49,6 +52,13 @@ public:
         std::unique_lock l(mutex);
         auto ret = queue.front();
         queue.pop_front();
+        return ret;
+    }
+
+    std::vector<T> get_all() {
+        std::unique_lock l{mutex};
+        std::vector<T> ret(queue.begin(), queue.end());
+        queue.clear();
         return ret;
     }
 };

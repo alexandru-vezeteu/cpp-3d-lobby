@@ -4,26 +4,25 @@
 
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
-#include "../Interfaces/IDrawable.hpp"
+
+#include "../Interfaces/IDraw.hpp"
 #include "../OpenGL3DModel/OpenGL3DModel.hpp"
 
 
 
 
-
-class Entity: public IDrawable
+class Entity: public IDraw
 {
 protected:
     OpenGL3DModel model;
     glm::vec3 position;
     glm::vec3 rotation;
     glm::vec3 scale;
-    glm::mat4 modelMatrix;
     std::string name;
 
 
 public:
-    explicit Entity(const std::string name, int scale=1);
+    explicit Entity(std::string name);
     ~Entity() override;
     void setPosition(glm::vec3 pos);
     void setRotation(glm::vec3 rot);
@@ -31,7 +30,9 @@ public:
 
 
 
-    void setVariable(const string& name,const std::variant<float,int, vec2,vec3,vec4,mat3,mat4>& val);
+    void setVariable(const std::string& name,const std::variant<float, int,
+                                                                glm::vec2, glm::vec3,
+                                                                glm::vec4, glm::mat3, glm::mat4>& val);
 
 
     Entity(const Entity& other) = delete;
@@ -43,7 +44,7 @@ public:
 
 
 
-    void display(const mat4& projectionM, const mat4& viewM) override;
+    void display(const glm::mat4& projectionM, const glm::mat4& viewM, const glm::vec3& viewPos) override;
 };
 
 

@@ -4,15 +4,16 @@
 
 #ifndef THREADSAFEUNORDEREDMAP_HPP
 #define THREADSAFEUNORDEREDMAP_HPP
+
 #include <unordered_map>
 #include <shared_mutex>
 #include <memory>
 #include <functional>
 #include <mutex>
+
 template<class K, class V>
 class ThreadSafeUnorderedMap {
 private:
-
     std::unordered_map<K,std::shared_ptr<V>> map;
     std::shared_mutex mutex;
 public:

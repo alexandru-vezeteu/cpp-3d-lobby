@@ -4,40 +4,46 @@
 
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
+
 #include "../Entity/Entity.hpp"
-#include "../Interfaces/IControable.hpp"
+#include "../Interfaces/IControl.hpp"
 
-class Player: public Entity, public IControable
+class Player final : public Entity, public IControl
 {
-    vec3 camera;
-    glm::mat4 projection;
+
+    static const glm::vec3 cameraOffset;
+
+    glm::vec3 viewPos;
+    glm::mat4 projectionMatrix;
+    glm::mat4 viewMatrix;
+
 public:
-    explicit Player(const std::string name, int scale=1);
-    ~Player() override {
+    explicit Player(std::string _name);
 
-    }
-    void control(unsigned char, int, int) override;
 
-    void addToPos(float x=0, float y=0, float z=0) {
-        position.x += x;
-    }
-    void addToRot(float x=0, float y=0, float z=0) {
-        rotation.x += x;
-        rotation.y += y;
-        rotation.z += z;
-    }
+    ~Player() override;
 
-    glm::mat4 getView();
-    glm::mat4 getProjection();
-    vec3 getPos() {
-        return position;
-    }
-    vec3 getRot() {
-        return rotation;
-    }
+    void updateCamera();
+
+    bool mouse(int x, int y) override;
+
+    bool specialKey(int key, int x, int y) override;
+
+    bool control(unsigned char key, int, int) override;
+
+    const glm::mat4 &getView() const;
+
+    const glm::mat4 &getProjection() const;
+
+    glm::mat4 &getProjection();
+
+    const glm::vec3 &getPosition() const;
+
+    const glm::vec3 &getRotation() const;
+
+    const glm::vec3 &getViewPos() const;
 
 };
-
 
 
 #endif //PLAYER_HPP
