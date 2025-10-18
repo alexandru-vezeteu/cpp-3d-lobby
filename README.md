@@ -165,6 +165,14 @@ The shader supports dynamic light configurations (currently 4 lights) and proper
 - Persistence layer (player data, world state)
 - Web-based admin interface
 
+
+## "Gameplay"
+![First picture - 2 windows of 2 players side by side](doc/1.png)
+![Second picture - 3 players in the scene](doc/2.png)
+![Third picture - a rotated playe](doc/3.png)
+
+WASD - move;
+Arrows - rotate;
 ---
 
 *This is a prototype demonstrating architectural patterns and technical capabilities. Not intended for production use.*
