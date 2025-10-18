@@ -9,52 +9,63 @@ find_package(GLEW REQUIRED)
 
 add_executable(Server
         server.cpp
-        src/Socket/PosixSocket.cpp
-        src/Socket/PosixSocket.hpp
-        src/Server/Server.cpp
-        src/Server/Server.hpp
-        src/Network/Network.cpp
-        src/Network/Network.hpp
-        src/Config/Config.hpp
-        src/Config/Config.cpp
-        src/Command/Command.hpp
+        Socket/PosixSocket.cpp
+        Socket/PosixSocket.hpp
+        Server/Server.cpp
+        Server/Server.hpp
+        Network/Network.cpp
+        Network/Network.hpp
+        Config/Config.hpp
+        Config/Config.cpp
+        ./Command/Command.hpp
 )
-
-add_executable(Client
-        client.cpp
-        src/OpenGL3DModel/OpenGL3DModel.cpp
-        src/OpenGL3DModel/OpenGL3DModel.hpp
-        src/Socket/PosixSocket.cpp
-        src/Socket/PosixSocket.hpp
-        src/Interfaces/IDraw.hpp
-        src/Interfaces/IControl.hpp
-        src/Entity/Entity.cpp
-        src/Entity/Entity.hpp
-        src/Client/Client.cpp
-        src/Client/Client.hpp
-        src/Player/Player.cpp
-        src/Player/Player.hpp
-        src/Network/Network.cpp
-        src/Network/Network.hpp
-        src/Config/Config.hpp
-        src/Command/Command.hpp
-        src/Threadsafe/ThreadSafeQueue.hpp
-        src/Threadsafe/ThreadSafeUnorderedMap.hpp
-        src/Interfaces/IRenderer.hpp
-        src/GLUTRenderer/GLUTRenderer.cpp
-        src/GLUTRenderer/GLUTRenderer.hpp
-        src/Config/Config.cpp
-        src/Compressor/Compressor.cpp
-        src/Compressor/Compressor.hpp
-)
-
-
 
 target_link_libraries(Server
         OpenGL::GL
         GLUT::GLUT
         GLEW::GLEW
 )
+
+
+if (UNIX AND NOT APPLE)
+    find_package(Threads REQUIRED)
+    target_link_libraries(Server
+            ${CMAKE_THREAD_LIBS_INIT}
+            X11
+    )
+endif()
+
+
+add_executable(Client
+        client.cpp
+        OpenGL3DModel/OpenGL3DModel.cpp
+        OpenGL3DModel/OpenGL3DModel.hpp
+        Socket/PosixSocket.cpp
+        Socket/PosixSocket.hpp
+        Interfaces/IDraw.hpp
+        Interfaces/IControl.hpp
+        Entity/Entity.cpp
+        Entity/Entity.hpp
+        Client/Client.cpp
+        Client/Client.hpp
+        Player/Player.cpp
+        Player/Player.hpp
+        Network/Network.cpp
+        Network/Network.hpp
+        Config/Config.hpp
+        ./Command/Command.hpp
+        Threadsafe/ThreadSafeQueue.hpp
+        Threadsafe/ThreadSafeUnorderedMap.hpp
+        Interfaces/IRenderer.hpp
+        GLUTRenderer/GLUTRenderer.cpp
+        GLUTRenderer/GLUTRenderer.hpp
+        Config/Config.cpp
+        Compressor/Compressor.cpp
+        Compressor/Compressor.hpp
+)
+
+
+
 
 target_link_libraries(Client
         OpenGL::GL
@@ -65,14 +76,7 @@ target_link_libraries(Client
 
 
 
-# For Linux, explicitly link X11 and other dependencies
-if (UNIX AND NOT APPLE)
-    find_package(Threads REQUIRED)
-    target_link_libraries(Server
-            ${CMAKE_THREAD_LIBS_INIT}
-            X11
-    )
-endif()
+
 
 
 if (UNIX AND NOT APPLE)

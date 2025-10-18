@@ -6,7 +6,7 @@
 #include <string>
 #include <utility>
 
-#include "src/Client/Client.hpp"
+#include "Client/Client.hpp"
 
 int main(int argc, char** argv) {
     std::string name;

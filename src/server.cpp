@@ -3,8 +3,8 @@
 //
 #include <iostream>
 #include <utility>
-#include "./src/Server/Server.hpp"
-#include "./src/Config/Config.hpp"
+#include "Server/Server.hpp"
+#include "Config/Config.hpp"
 
 
 int main(int argc, char** argv) {
